@@ -16,6 +16,30 @@ const supabase = createClient(
 app.use(cors())
 app.use(express.json())
 
+// Add this test route
+app.get('/api/test-db', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .limit(1)
+    
+    if (error) throw error
+    
+    res.json({ 
+      success: true, 
+      message: 'Database connection working!',
+      data 
+    })
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      message: 'Database connection failed',
+      error: error.message 
+    })
+  }
+})
+
 app.get('/', (req, res) =>{
     res.json({message: 'Hello World'})
 
