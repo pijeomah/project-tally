@@ -3,7 +3,7 @@
 # -------------------------------------------------------
 # PASTE YOUR TOKEN BELOW AFTER LOGGING IN
 # -------------------------------------------------------
-@token=eyJhbGciOiJIUzI1NiIsImtpZCI6Iit5VVNpVU5ldkRPU3JVeHAiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NvdWFscmRxbm5seWhhaXB6YXh5LnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiI2OWI0NzkwOS02MTE5LTQ4YzItYjI5YS0wNGMzY2JiZjRmYWYiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzY1OTQyMjI0LCJpYXQiOjE3NjU5Mzg2MjQsImVtYWlsIjoid2lsbHl0cmF5QGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZW1haWwiLCJwcm92aWRlcnMiOlsiZW1haWwiXX0sInVzZXJfbWV0YWRhdGEiOnsiZW1haWwiOiJ3aWxseXRyYXlAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBob25lX3ZlcmlmaWVkIjpmYWxzZSwic3ViIjoiNjliNDc5MDktNjExOS00OGMyLWIyOWEtMDRjM2NiYmY0ZmFmIn0sInJvbGUiOiJhdXRoZW50aWNhdGVkIiwiYWFsIjoiYWFsMSIsImFtciI6W3sibWV0aG9kIjoicGFzc3dvcmQiLCJ0aW1lc3RhbXAiOjE3NjU5Mzg2MjR9XSwic2Vzc2lvbl9pZCI6ImUwMzk0MjM5LWMwM2EtNGNkMi05NjE4LTkxMTg3MzY3NjIwZCIsImlzX2Fub255bW91cyI6ZmFsc2V9.AmUpZ0WVZo3AXfXM4n2EQ20MtmLDRWxx5aPEXdUg6K8
+@token=eyJhbGciOiJIUzI1NiIsImtpZCI6Iit5VVNpVU5ldkRPU3JVeHAiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NvdWFscmRxbm5seWhhaXB6YXh5LnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiI2OWI0NzkwOS02MTE5LTQ4YzItYjI5YS0wNGMzY2JiZjRmYWYiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzY2MjM5NzQ4LCJpYXQiOjE3NjYyMzYxNDgsImVtYWlsIjoid2lsbHl0cmF5QGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZW1haWwiLCJwcm92aWRlcnMiOlsiZW1haWwiXX0sInVzZXJfbWV0YWRhdGEiOnsiZW1haWwiOiJ3aWxseXRyYXlAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBob25lX3ZlcmlmaWVkIjpmYWxzZSwic3ViIjoiNjliNDc5MDktNjExOS00OGMyLWIyOWEtMDRjM2NiYmY0ZmFmIn0sInJvbGUiOiJhdXRoZW50aWNhdGVkIiwiYWFsIjoiYWFsMSIsImFtciI6W3sibWV0aG9kIjoicGFzc3dvcmQiLCJ0aW1lc3RhbXAiOjE3NjYyMzYxNDh9XSwic2Vzc2lvbl9pZCI6IjljMjEzMzRhLTcwYmItNGFhNy05MWQ4LWExZGVhYWZhMDIxMCIsImlzX2Fub255bW91cyI6ZmFsc2V9.YiAsIV46BPR07Ox8bsXHK1NPBF5HemGvGWrv9JzNl8g
 
 
 ### 1. LOGIN (Run this first!)
@@ -46,3 +46,44 @@ Authorization: Bearer {{token}}
     "type": "expense",
     "icon": "⚡"
 }
+###
+ 
+GET {{baseUrl}}/payment-methods
+Authorization: Bearer {{token}}
+###
+
+ 
+POST {{baseUrl}}/payment-methods/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+{
+    "name": "Mobile Money"
+    
+}
+
+### 4. Create Another Method (Cash)
+POST {{baseUrl}}/payment-methods/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "Cash"
+}
+
+
+
+### Test 6: Update Payment Method
+PUT {{baseUrl}}/payment-methods/51094d55-518b-41b6-a49c-2734d531abc3
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Main Bank (Updated)"
+}
+
+### Test 7: Delete Payment Method
+DELETE {{baseUrl}}/payment-methods/
+Authorization: Bearer {{token}}
+Content-Type: application/json

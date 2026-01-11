@@ -6,7 +6,7 @@ import authRoutes from './routes/auth.js'
 // import transactionRoutes from './routes/transactions'
 // import accountsRoutes from './routes/accounts'
 // import transactionLinesRoutes from './routes/transaction-lines'
-// import paymentMethodRoutes from './routes/payment-methods'
+ import paymentMethodRoutes from './routes/payment-methods.js'
 import  supabase  from './config/supabase.js'
 
 
@@ -32,7 +32,7 @@ app.use('/api/categories', categoriesRoutes)
 // app.use('/api/transactions', transactionRoutes)
 // app.use('/api/transaction-lines', transactionLinesRoutes)
 // app.use('/api/accounts', accountsRoutes)
-//app.use('/api/payment-methods', paymentMethodRoutes)
+app.use('/api/payment-methods', paymentMethodRoutes)
 
 // Server Error handling
 app.use((err, req,res,next) => {
