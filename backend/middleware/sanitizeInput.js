@@ -4,18 +4,20 @@ export const sanitizeInput = (req, res, next) => {
         if(!req.body || Object.keys(req.body).length === 0 ){
         return next()
     }
-    function sanitize(value){
+    const sanitize = (value)=>{
         if( typeof value === 'string'){
-            return value.trim().replace(/<[^>]*>/g, '')
+            return value.trim()
+            .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
         }else if(Array.isArray(value)){
-        for(let i = 0; i < value.length; i++){
-            value[i] =sanitize(value[i])
-            }
-            return value
+            return value.map(item => sanitize(item))
         }else if(typeof value === 'object'&& value !== null && !Array.isArray(value)){
-        for(let key in value){
-            value[key] = sanitize(value[key])
-        }
+        Object.keys(value).forEach(key => {
+                    value[key] = sanitize(value[key]);
+                });
         return value
         }else{return value}
     }

@@ -59,7 +59,7 @@ export const getOne = async(req, res)=> {
 export const archive = async(req, res) => {
         try {
             
-    const transactionId = req.params.od
+    const transactionId = req.params.id
     const userId = req.user.id
     const { data, error } = await supabase
         .from('transactions')

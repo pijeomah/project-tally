@@ -1,10 +1,10 @@
 export const validateAmount = (req,res,next)=> {
     const amount = req.body.amount
-    if(typeof amount !== number){
-         return res.status(400).json({error: `Amount must be a number`})
-   }
-   if(amount === null || amount === undefined){
+    if(amount === null || amount === undefined){
     return res.status(400).json({error: 'Amount is required'})
+   }
+    if(typeof amount !== 'number'){
+         return res.status(400).json({error: `Amount must be a number`})
    }
 
    if(amount <= 0){
