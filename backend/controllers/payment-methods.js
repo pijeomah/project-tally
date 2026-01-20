@@ -1,29 +1,14 @@
 import supabase from '../config/supabase.js'
 
-// Helper function for account id
-const getAccountId = async(userId) => {
-    
-    const {data : account, error} = await supabase
-        .from('accounts')
-        .select('id')
-        .eq('user_id', userId)
-        .single()
-        console.log("SEARCH RESULT:", account)
-            if(!account || error){
-                return null
-            }
-            return account.id
-        
-}
+
 export const getAll = async (req, res) => {
         try {
             const userId = req.user.id
-            const accountId = await getAccountId(userId)
-            if(!accountId) return res.status(404).json({error: 'Account not found'})
+            
             const {data, error} = await supabase
                     .from('payment-methods')
                     .select('*')
-                    .eq('account_id', accountId)
+                    .eq('user_id', userId)
                      if(error){ res.status(500).json({error: error.message})}
                 else res.status(200).json(data)
         } catch (error) {
@@ -36,7 +21,7 @@ export const getAll = async (req, res) => {
 
 export const createPayment = async(req,res) =>{
     const {name, is_active} = req.body
-    const authUserId = req.user.id
+    const userId = req.user.id
     if(!name){
         return res.status(400).json({error: 'Name and type are required'})
 
@@ -46,22 +31,21 @@ export const createPayment = async(req,res) =>{
             if (!name) {
             return res.status(400).json({ error: 'Name and type are required' })
         }
-            const accountId = await getAccountId(authUserId)
-            if (!accountId) return res.status(404).json({ error: 'Account not found' })
+            
            
             const {data, error} = await supabase
                 .from('payment-methods')
                 .insert([
                     {
                         name,
-                        account_id: accountId,
-                        user_id: authUserId, 
+                        user_id: userId, 
                         is_active: is_active !== undefined ? is_active : true,
                         is_system: false,
 
 
                     }
                 ])
+                .eq('user_id', userId)
                 .select()
                 .single()
                 if (error) return res.status(500).json({ error: error.message })
@@ -81,16 +65,12 @@ export const updatePayment = async(req,res)=> {
         console.log('User ID:', userId)
 
 
-                const accountId = await getAccountId(userId)
-                if(!accountId){
-                    return(res.status(500).json({error: 'Unauthorized user account'}))
-                }
-
+               
                 const {data : paymentMethod, error: fetchError} = await supabase 
                     .from('payment-methods')
                     .select('is_system')
                     .eq('id', id)
-                    .eq('account_id', accountId)
+                    .eq('user_id', userId)
                     .single()
 
                     console.log('Found payment method:', paymentMethod)
@@ -105,7 +85,7 @@ export const updatePayment = async(req,res)=> {
             .from('payment-methods')
             .update(req.body)
             .eq('id', id)
-            // .eq('account_id', accountId)
+            .eq('user_id', userId)
             .select()
             .single()
             if(error){
@@ -124,13 +104,12 @@ export const deletePayment = async(req,res)=> {
         
         const {id} = req.params
         const userId = req.user.id
-        const accountId = await getAccountId(userId)
-        if (!accountId) return res.status(404).json({ error: 'Account not found' })
+       
                 const { data,error } = await supabase 
             .from('payment-methods')
             .update({is_active: false})
             .eq('id', id)
-            .eq('account_id', accountId)
+            .eq('user_id', userId)
             .select()
              if(error){
                 res.status(500).json({error: 'Internal server error occurred'})

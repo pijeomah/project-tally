@@ -8,11 +8,11 @@ export const getAll = async(req,res)=> {
             .from('accounts')
             .select('*')
             .eq('user_id', userId)
-            .order('type', {ascending: true})
-            .order('name', {ascending: true})
-            .select()
-
-            res.status(200).json({data: 'Request successful'})
+            .order('account_type', {ascending: true})
+            .order('account_name', {ascending: true})
+            
+        if(error) throw error
+         return res.status(200).json({data})
 
     } catch (error) {
        res.status(500).json({error: error.message}) 
@@ -31,11 +31,13 @@ export const getOne =  async(req,res)=> {
             .eq('user_id', userId)
             .single()
 
-        if(error?.code === 'PGRST116' || !data){
+        if(accountError?.code === 'PGRST116' || !accountData){
             return res.status(404).json({error:`Account not found`})
         }
 
-        return res.status(200).json({data: 'Account found!'})
+
+
+        return res.status(200).json({accountData})
 
    } catch (error) {
     res.status(500).json({error: error.message}) 
@@ -54,7 +56,7 @@ export const createAccount = async(req,res)=> {
             account_type,
         } = req.body
 
-        if(!account_name || !account_type || !account_code){
+        if(!account_name || !account_type ){
             return res.status(400).json({error: 'Account name, type or code are required'})
         }
 

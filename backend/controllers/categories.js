@@ -7,6 +7,7 @@ const getAccountId = async(userId) => {
         .from('accounts')
         .select('id')
         .eq('user_id', userId)
+        .limit(1)
         .single()
         console.log("SEARCH RESULT:", account)
             if(!account || error){
@@ -18,12 +19,11 @@ const getAccountId = async(userId) => {
 export const getAll = async (req, res) => {
         try {
             const userId = req.user.id
-            const accountId = await getAccountId(userId)
-            if(!accountId) return res.status(404).json({error: 'Account not found'})
+            
             const {data, error} = await supabase
                     .from('categories')
                     .select('*')
-                    .eq('account_id', accountId)
+                    .eq('user_id', userId)
                      if(error){ res.status(500).json({error: error.message})}
                 else res.status(200).json(data)
         } catch (error) {
@@ -45,16 +45,13 @@ export const createCategories = async(req,res) =>{
             if (!name || !type) {
             return res.status(400).json({ error: 'Name and type are required' })
         }
-            const accountId = await getAccountId(authUserId)
-            if (!accountId) return res.status(404).json({ error: 'Account not found' })
-           
+            
             const {data, error} = await supabase
                 .from('categories')
                 .insert([
                     {
                         name,
                         type,
-                        account_id: accountId,
                         user_id: authUserId, 
                         is_active: is_active !== undefined ? is_active : true,
                         is_system: false,
@@ -86,7 +83,7 @@ export const updateCategories = async(req,res)=> {
             .from('categories')
             .update(req.body)
             .eq('id', id)
-            .eq('account_id', accountId)
+            .eq('user_id', userId)
             .select()
             .single()
             if(error){
@@ -105,13 +102,12 @@ export const deleteCategories = async(req,res)=> {
         
         const {id} = req.params
         const userId = req.user.id
-        const accountId = await getAccountId(userId)
-        if (!accountId) return res.status(404).json({ error: 'Account not found' })
+        
                 const { data,error } = await supabase 
             .from('categories')
             .update({is_active: false})
+            .eq('user_id', userId)
             .eq('id', id)
-            .eq('account_id', accountId)
             .select()
              if(error){
                 res.status(500).json({error: 'Internal server occurred'})

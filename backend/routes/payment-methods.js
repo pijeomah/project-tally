@@ -8,8 +8,8 @@ const router = express.Router()
 
 router.get('/', requireAuth, getAll )
 router.post('/create', requireAuth, sanitizeInput, createPayment)
-router.put('/:id', requireAuth, validateUUID, sanitizeInput,  updatePayment)
-router.delete('/:id', requireAuth, validateUUID, deletePayment)
+router.put('/:id', requireAuth, validateUUID(), sanitizeInput,  updatePayment)
+router.delete('/:id', requireAuth, validateUUID(), deletePayment)
 
 
 

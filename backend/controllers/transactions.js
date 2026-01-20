@@ -12,7 +12,7 @@ export const getAll = async(req,res) => {
                 .from('transactions')
                 .select('*', {count: 'exact'})
                 .eq('user_id', userId)
-                .order('date', {ascending: false})
+                .order('transaction_date', {ascending: false})
                 .range(from, to)
                 if(error) throw error
 
@@ -88,12 +88,17 @@ export const createTransactions = async(req,res)=> {
     {transaction_date, 
     type,
     amount, 
-    category_id, 
-    payment_method_id, 
-    account_id, 
     status,  
-    notes
+    notes,
+    account_id,
+    category_id, 
+    payment_method_id
 } = req.body
+        console.log("=== DEBUGGING INPUTS ===");
+        console.log("Type:", type);
+        console.log("Account ID:", account_id);
+        console.log("Category ID:", category_id);
+        console.log("Payment Method ID:", payment_method_id);
 
 if(!amount|| !transaction_date || !type|| !category_id || !payment_method_id || !account_id || !status || !notes ){
 return res.status(400).json({error: `Missing critical fields`})
@@ -101,32 +106,45 @@ return res.status(400).json({error: `Missing critical fields`})
 
 let debitLine = {}
 let creditLine = {}
-if(type === 'EXPENSE'){
+const normalizedType = type.toLowerCase()
+if(normalizedType === 'expense'){
+    // EXPENSE: Money moves FROM Bank TO Category
     debitLine = {
-        account_id: category_id,
+        account_id: account_id,
+       category_id: category_id,
+        payment_method_id: null, // Must be null
         debit_amount: amount,
         credit_amount: 0
 
     }, 
     creditLine = {
+        // Source: The Payment Method (e.g., Bank)
         account_id: account_id,
+        payment_method_id: payment_method_id,
+        category_id: null,
         credit_amount: amount, 
         debit_amount: 0
     }
-}else if(type === 'INCOME'){
+}else if(normalizedType === 'income'){
+    // INCOME: Money moves FROM Category TO Bank
     debitLine ={
         account_id: account_id,
+        category_id: null,
+        payment_method_id: payment_method_id,
         debit_amount: amount,
         credit_amount: 0
     }
     creditLine = {
-        account_id: category_id, 
+        // Source: The Category (e.g., Salary)
+        account_id: account_id,
+        category_id: category_id,
+        payment_method_id:null, 
         credit_amount: amount,
         debit_amount: 0
     }
 
 }else{
-    return res.status(400).json({error: `Invalid transcation type `})
+    return res.status(400).json({error: `Invalid transaction type:${type} `})
 }
 
 try {
@@ -152,17 +170,21 @@ try {
                 ...debitLine,
                 transaction_id: newTransId,
                 user_id: userId,
-                category_id: category_id,
-                payment_method_id: payment_method_id
+              
+                
             }, 
             {
                 ...creditLine,
                 transaction_id: newTransId,
                 user_id: userId,
-                category_id: category_id,
-                payment_method_id: payment_method_id
+               
+               
             }
         ]
+
+        console.log("\n========== FINAL PAYLOAD DEBUG ==========");
+        console.log(JSON.stringify(linesToInsert, null, 2));
+        console.log("=========================================\n");
 
         const {data: linesData, error:linesError} = await supabase
                     .from('transaction-lines')
