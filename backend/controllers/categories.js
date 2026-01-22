@@ -89,7 +89,7 @@ export const updateCategories = async(req,res)=> {
             if(error){
                 res.status(500).json({error: 'Internal server occurred'})
             }else{
-                return res.status(200).json(data[0])
+                return res.status(200).json(data)
             }
         } catch (error) {
             res.status(500).json({error: error.message})
@@ -112,7 +112,7 @@ export const deleteCategories = async(req,res)=> {
              if(error){
                 res.status(500).json({error: 'Internal server occurred'})
             }else{
-                return res.status(200).json(data[0])
+                return res.status(200).json(data)
             }
 
     } catch (error) {
