@@ -1,5 +1,5 @@
 import supabase from '../config/supabase.js'
-import { generateNextAccountCode } from '../utils/accountUtils.js';
+
 
 export const getAll = async(req,res)=> {
     try {
