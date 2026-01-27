@@ -1,11 +1,10 @@
 import express from 'express' 
 import dotenv from 'dotenv'
 import cors from 'cors'
-import categoriesRoutes from './routes/categories.js'
 import authRoutes from './routes/auth.js'
-import transactionRoutes from './routes/transactions.js'
-import accountsRoutes from './routes/accounts.js'
-import paymentMethodRoutes from './routes/payment-methods.js'
+// import transactionV2Routes from './routes/v2/transactions.js'
+// import walletsV2Routes from './routes/v2/accounts.js'
+import tagsV2Routes from './routes/v2/tags.js'
 import  supabase  from './config/supabase.js'
 
 
@@ -27,10 +26,10 @@ app.get('/', (req, res) =>{
 
 
 app.use('/api/auth', authRoutes)
-app.use('/api/categories', categoriesRoutes)
-app.use('/api/transactions', transactionRoutes)
-app.use('/api/accounts', accountsRoutes)
-app.use('/api/payment-methods', paymentMethodRoutes)
+// app.use('/api/v2/wallets', walletV2Routes)
+// app.use('/api/v2/transactions', transactionsV2Routes)
+app.use('/api/v2/tags', tagsV2Routes)
+
 
 // Server Error handling
 app.use((err, req,res,next) => {
