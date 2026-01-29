@@ -5,6 +5,7 @@ export const create = async (req,res)=> {
     try {
         const userId = req.user.id
         const { name, type } = req.body
+        console.log('USER IN CONTROLLER:', req.user)
         const normalizedName = name.toLowerCase().trim()
         if(!normalizedName|| !type){
             return res.status(400).json({error:`Name and type are required` })

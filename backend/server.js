@@ -1,7 +1,7 @@
 import express from 'express' 
 import dotenv from 'dotenv'
 import cors from 'cors'
-import authRoutes from './routes/auth.js'
+import authV2Routes from './routes/v2/auth.js'
 // import transactionV2Routes from './routes/v2/transactions.js'
 // import walletsV2Routes from './routes/v2/accounts.js'
 import tagsV2Routes from './routes/v2/tags.js'
@@ -25,7 +25,7 @@ app.get('/', (req, res) =>{
 })
 
 
-app.use('/api/auth', authRoutes)
+app.use('/api/v2/auth', authV2Routes)
 // app.use('/api/v2/wallets', walletV2Routes)
 // app.use('/api/v2/transactions', transactionsV2Routes)
 app.use('/api/v2/tags', tagsV2Routes)
